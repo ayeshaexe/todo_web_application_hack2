@@ -1,0 +1,106 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.manifest
+*.spec
+venv/
+env/
+ENV/
+.venv/
+.env/
+.ENV
+.python-version
+.pytest_cache/
+.coverage
+htmlcov/
+.pyup.yml
+.isort.cfg
+.tox/
+.coverage.xml
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git/modules/
+.pydevproject
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pycharm/
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env*
+!.env.example
+
+# FastAPI/Uvicorn
+*.db
+*.db-journal
+uvicorn_error.log
+access.log
+*.pid
+
+# Database
+*.sqlite
+*.sqlite3
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Thumbs.db:encryptable
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Temporary folders
+tmp/
+temp/
+
+# IDE specific
+.vscode/
+.idea/
+
+# Local configuration
+.local/
+.settings/
