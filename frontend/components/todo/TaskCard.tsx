@@ -37,9 +37,9 @@ const TaskCardComponent: React.FC<TaskCardProps> = ({ task, onTaskUpdate, onTask
           title: backendTodo.title || task.title || '',
           description: backendTodo.description || task.description || '',
           completed: Boolean(backendTodo.completed),
-          userId: backendTodo.user_id || backendTodo.userId || task.userId || '',
-          createdAt: backendTodo.created_at || backendTodo.createdAt || task.createdAt || new Date().toISOString(),
-          updatedAt: backendTodo.updated_at || backendTodo.updatedAt || new Date().toISOString()
+          userId: backendTodo.userId || task.userId || '',
+          createdAt: backendTodo.createdAt || task.createdAt || new Date().toISOString(),
+          updatedAt: backendTodo.updatedAt || task.updatedAt || new Date().toISOString()
         };
         onTaskUpdate(mappedTodo);
       }
@@ -91,9 +91,9 @@ const TaskCardComponent: React.FC<TaskCardProps> = ({ task, onTaskUpdate, onTask
           title: backendTodo.title || editTitle || '',
           description: backendTodo.description || editDescription || '',
           completed: Boolean(backendTodo.completed),
-          userId: backendTodo.user_id || backendTodo.userId || task.userId || '',
-          createdAt: backendTodo.created_at || backendTodo.createdAt || task.createdAt || new Date().toISOString(),
-          updatedAt: backendTodo.updated_at || backendTodo.updatedAt || new Date().toISOString()
+          userId: backendTodo.userId || task.userId || '',
+          createdAt: backendTodo.createdAt || task.createdAt || new Date().toISOString(),
+          updatedAt: backendTodo.updatedAt || task.updatedAt || new Date().toISOString()
         };
         onTaskUpdate(mappedTodo);
       }

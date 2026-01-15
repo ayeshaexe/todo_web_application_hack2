@@ -30,14 +30,16 @@ export const TaskList: React.FC<TaskListProps> = ({ onTaskUpdate, onTaskDelete, 
       const extractedTodos = response.todos.map(item => {
         // Check if item has a 'todo' property (mock API format) or is a direct todo (real API format)
         const backendTodo = ('todo' in item && item.todo) ? item.todo : item;
+        // Type assertion to handle the backend response structure properly
+        const typedBackendTodo = backendTodo as Todo;
         return {
-          id: backendTodo.id || '',
-          title: backendTodo.title || '',
-          description: backendTodo.description || '',
-          completed: Boolean(backendTodo.completed),
-          userId: backendTodo.user_id || backendTodo.userId || '',
-          createdAt: backendTodo.created_at || backendTodo.createdAt || new Date().toISOString(),
-          updatedAt: backendTodo.updated_at || backendTodo.updatedAt || new Date().toISOString()
+          id: typedBackendTodo.id || '',
+          title: typedBackendTodo.title || '',
+          description: typedBackendTodo.description || '',
+          completed: Boolean(typedBackendTodo.completed),
+          userId: typedBackendTodo.userId || '',
+          createdAt: typedBackendTodo.createdAt || new Date().toISOString(),
+          updatedAt: typedBackendTodo.updatedAt || new Date().toISOString()
         };
       });
       // Sort tasks by creation date, newest first - optimized by precomputing timestamps
