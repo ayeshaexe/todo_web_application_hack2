@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Prevent the warning about multiple lockfiles
+  experimental: {
+    serverHooks: true,
+  },
 };
 
 export default nextConfig;
