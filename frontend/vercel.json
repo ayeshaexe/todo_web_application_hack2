@@ -1,5 +1,4 @@
 {
-  "root": ".",
   "framework": "nextjs",
   "builds": [
     {

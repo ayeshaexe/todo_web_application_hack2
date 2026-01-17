@@ -24,13 +24,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     <div className="min-h-screen bg-[#F9F6F3]">
       {/* Header */}
       <header className="bg-[#1C352D] text-white shadow-md">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/dashboard" className="text-xl font-bold">
+        <div className="container mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <Link href="/dashboard" className="text-xl font-bold text-center sm:text-left">
             Todo App
           </Link>
 
-          <div className="flex items-center space-x-4">
-            <span className="text-sm">
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <span className="text-xs sm:text-sm text-center">
               Welcome, {state.user?.name || state.user?.email}
             </span>
             <Button
@@ -45,14 +45,14 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-6 sm:py-8">
         {children}
       </main>
 
       {/* Footer */}
-      <footer className="bg-[#1C352D] text-white py-4 mt-8">
+      <footer className="bg-[#1C352D] text-white py-4 mt-6 sm:mt-8">
         <div className="container mx-auto px-4 text-center">
-          <p>© {new Date().getFullYear()} Todo App. All rights reserved.</p>
+          <p className="text-xs sm:text-sm">© {new Date().getFullYear()} Todo App. All rights reserved.</p>
         </div>
       </footer>
     </div>

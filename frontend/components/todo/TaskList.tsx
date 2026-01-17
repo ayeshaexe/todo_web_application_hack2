@@ -17,6 +17,15 @@ export const TaskList: React.FC<TaskListProps> = ({ onTaskUpdate, onTaskDelete, 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Memoize the sorting function to avoid recreating it on every render
+  const sortTasks = useCallback((tasksArray: Todo[]) => {
+    return [...tasksArray].sort((a, b) => {
+      const timeA = new Date(a.createdAt).getTime();
+      const timeB = new Date(b.createdAt).getTime();
+      return timeB - timeA; // Descending order (newest first)
+    });
+  }, []);
+
   useEffect(() => {
     fetchTasks();
   }, [refreshTrigger]);
@@ -32,22 +41,22 @@ export const TaskList: React.FC<TaskListProps> = ({ onTaskUpdate, onTaskDelete, 
         const backendTodo = ('todo' in item && item.todo) ? item.todo : item;
         // Type assertion to handle the backend response structure properly
         const typedBackendTodo = backendTodo as Todo;
+        // Ensure we're getting the correct timestamp properties from the backend
+        const createdAtValue = typedBackendTodo.createdAt || typedBackendTodo.createdAt || '';
+        const updatedAtValue = typedBackendTodo.updatedAt || typedBackendTodo.updatedAt || '';
+
         return {
           id: typedBackendTodo.id || '',
           title: typedBackendTodo.title || '',
           description: typedBackendTodo.description || '',
           completed: Boolean(typedBackendTodo.completed),
           userId: typedBackendTodo.userId || '',
-          createdAt: typedBackendTodo.createdAt || new Date().toISOString(),
-          updatedAt: typedBackendTodo.updatedAt || new Date().toISOString()
+          createdAt: createdAtValue,
+          updatedAt: updatedAtValue
         };
       });
       // Sort tasks by creation date, newest first - optimized by precomputing timestamps
-      const sortedTodos = extractedTodos.sort((a, b) => {
-        const timeA = new Date(a.createdAt).getTime();
-        const timeB = new Date(b.createdAt).getTime();
-        return timeB - timeA; // Descending order (newest first)
-      });
+      const sortedTodos = sortTasks(extractedTodos);
       setTasks(sortedTodos);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch tasks';
@@ -59,7 +68,7 @@ export const TaskList: React.FC<TaskListProps> = ({ onTaskUpdate, onTaskDelete, 
     }
   };
 
-  const handleTaskUpdate = (updatedTask: Todo | undefined) => {
+  const handleTaskUpdate = useCallback((updatedTask: Todo | undefined) => {
     if (!updatedTask || !updatedTask.id) {
       console.error('Invalid updatedTask in handleTaskUpdate:', updatedTask);
       return;
@@ -67,41 +76,36 @@ export const TaskList: React.FC<TaskListProps> = ({ onTaskUpdate, onTaskDelete, 
 
     // Update only the specific task without re-sorting if only completion status changed
     // This improves performance by avoiding unnecessary sorts
-    const updatedTasks = tasks.map(task => task.id === updatedTask.id ? updatedTask : task);
+    setTasks(prevTasks => {
+      const updatedTasks = prevTasks.map(task => task.id === updatedTask.id ? updatedTask : task);
 
-    // Only re-sort if other fields changed (not just completion status)
-    if (tasks.some(task => task.id === updatedTask.id &&
-        (task.title !== updatedTask.title || task.description !== updatedTask.description))) {
-      // Re-sort the tasks to maintain order by creation date (newest first)
-      const sortedTasks = updatedTasks.sort((a, b) => {
-        const timeA = new Date(a.createdAt).getTime();
-        const timeB = new Date(b.createdAt).getTime();
-        return timeB - timeA; // Descending order (newest first)
-      });
-      setTasks(sortedTasks);
-    } else {
-      // Just update the task without re-sorting for better performance
-      setTasks(updatedTasks);
-    }
+      // Only re-sort if other fields changed (not just completion status)
+      if (prevTasks.some(task => task.id === updatedTask.id &&
+          (task.title !== updatedTask.title || task.description !== updatedTask.description))) {
+        // Re-sort the tasks to maintain order by creation date (newest first)
+        return sortTasks(updatedTasks);
+      } else {
+        // Just update the task without re-sorting for better performance
+        return updatedTasks;
+      }
+    });
 
     if (onTaskUpdate) {
       onTaskUpdate(updatedTask);
     }
-  };
+  }, [onTaskUpdate, sortTasks]);
 
-  const handleTaskDelete = (taskId: string) => {
-    const filteredTasks = tasks.filter(task => task.id !== taskId);
-    // Re-sort the tasks to maintain order by creation date (newest first) - optimized
-    const sortedTasks = filteredTasks.sort((a, b) => {
-      const timeA = new Date(a.createdAt).getTime();
-      const timeB = new Date(b.createdAt).getTime();
-      return timeB - timeA; // Descending order (newest first)
+  const handleTaskDelete = useCallback((taskId: string) => {
+    setTasks(prevTasks => {
+      const filteredTasks = prevTasks.filter(task => task.id !== taskId);
+      // Re-sort the tasks to maintain order by creation date (newest first) - optimized
+      return sortTasks(filteredTasks);
     });
-    setTasks(sortedTasks);
+
     if (onTaskDelete) {
       onTaskDelete(taskId);
     }
-  };
+  }, [onTaskDelete, sortTasks]);
 
   if (loading) {
     return (
@@ -136,7 +140,7 @@ export const TaskList: React.FC<TaskListProps> = ({ onTaskUpdate, onTaskDelete, 
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {tasks.map(task => (
         <TaskCard
           key={task.id}
