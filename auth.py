@@ -127,7 +127,7 @@ def create_jwt_token(user_id: str, hours_valid: int = 24) -> str:
     """
     current_time = now_utc()
     expire_time = current_time + timedelta(hours=hours_valid)
-    
+
     payload = {
         "sub": user_id,
         "iat": int(current_time.timestamp()),   # issued at
@@ -136,6 +136,10 @@ def create_jwt_token(user_id: str, hours_valid: int = 24) -> str:
 
     token = jwt.encode(payload, settings.better_auth_secret, algorithm=settings.jwt_algorithm)
     return token
+
+
+# Alias for main.py compatibility
+create_access_token = create_jwt_token
 
 
 def verify_jwt(token: str) -> Optional[Dict[str, Any]]:
@@ -211,3 +215,5 @@ class JWTBearer(HTTPBearer):
             )
 
         return payload
+
+

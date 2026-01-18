@@ -38,8 +38,9 @@ const TaskCardComponent: React.FC<TaskCardProps> = ({ task, onTaskUpdate, onTask
           description: backendTodo.description || task.description || '',
           completed: Boolean(backendTodo.completed),
           userId: backendTodo.userId || task.userId || '',
-          createdAt: backendTodo.createdAt || backendTodo.createdAt || task.createdAt || '', // Handle both snake_case and camelCase from backend, preserve original creation time
+                    createdAt: backendTodo.createdAt || backendTodo.createdAt || task.createdAt || '', // Handle both snake_case and camelCase from backend, preserve original creation time
           updatedAt: backendTodo.updatedAt || backendTodo.updatedAt || task.updatedAt || '' // Handle both snake_case and camelCase from backend, preserve original updated time
+
         };
         onTaskUpdate(mappedTodo);
       }
